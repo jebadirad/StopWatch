@@ -15,59 +15,56 @@ var StopWatchBox = React.createClass({
       }]
     };
   },
-
   render: function () {
-    var timer = this.props.data.map(function (time) {
+    var timer = this.state.data.map(function (time) {
       return React.createElement(StopWatchTimer, { key: time.id, data: time });
     });
     return React.createElement(
       "div",
       { classID: "container" },
-      timer,
-      React.createElement(StartButton, null),
-      React.createElement(StopButton, null),
-      " ",
-      React.createElement(ClearButton, null)
+      timer
     );
   }
 });
-var StartButton = React.createClass({
-  displayName: "StartButton",
-
-  render: function () {
-    return React.createElement("input", { type: "submit", value: "Start" });
-  }
-});
-
-var ClearButton = React.createClass({
-  displayName: "ClearButton",
-
-  render: function () {
-    return React.createElement("input", { type: "submit", value: "Reset" });
-  }
-});
-
-var StopButton = React.createClass({
-  displayName: "StopButton",
-
-  render: function () {
-    return React.createElement("input", { type: "submit", value: "Stop" });
-  }
-});
-
 var StopWatchTimer = React.createClass({
   displayName: "StopWatchTimer",
 
-  render: function () {
+  startCounter: function (data) {
+    //e.preventDefault();
 
+    if (!this.props.data.running) {
+      setInterval(this.increment, 1000);
+    }
+  },
+  increment: function () {
+    this.props.data.running = true;
+    this.props.data.seconds += 1;
+    this.setState({ data: this.props.data });
+  },
+
+  clearStopWatch: function (e) {
+    //e.preventDefault();
+    console.error("clear");
+    //somehow tell parent to set initial state.
+  },
+
+  stopCounter: function (e) {
+    //  e.preventDefault();
+    console.error("stop");
+    //stop the interval
+  },
+  render: function () {
     return React.createElement(
-      "span",
+      "div",
       { className: "timer" },
       this.props.data.hours,
       " : ",
       this.props.data.minutes,
       " : ",
-      this.props.data.seconds
+      this.props.data.seconds,
+      React.createElement("input", { type: "submit", value: "Start", onClick: this.startCounter.bind(this, this.props.data) }),
+      React.createElement("input", { type: "submit", value: "Stop", onClick: this.stopCounter }),
+      React.createElement("input", { type: "submit", value: "Reset", onClick: this.clearStopWatch })
     );
   }
 });
