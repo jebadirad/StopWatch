@@ -29,35 +29,47 @@ var StopWatchBox = React.createClass({
 var StopWatchTimer = React.createClass({
   startCounter: function(data){
     //e.preventDefault();
-
     if(!this.props.data.running){
-      setInterval(this.increment, 1000);
+      this.incrementFunction = setInterval(this.increment, 1000);
     }
   },
   increment: function(){
     this.props.data.running = true;
     this.props.data.seconds += 1;
+    this.formatSeconds();
     this.setState({data : this.props.data});
   },
+  clearStopWatch : function(data){
 
-  clearStopWatch : function(e){
-    //e.preventDefault();
-    console.error("clear");
-    //somehow tell parent to set initial state.
+      this.props.data.seconds = 0;
+      this.props.data.minuters = 0;
+      this.props.data.hours = 0;
+      this.setState({data : this.props.data});
+
   },
-
-  stopCounter : function(e){
-  //  e.preventDefault();
-    console.error("stop");
-    //stop the interval
+  stopCounter : function(data){
+    if(this.props.data.running){
+      this.props.data.running = false;
+      clearInterval(this.incrementFunction);
+    }
+  },
+  formatSeconds : function(){
+    if(this.props.data.seconds > 59){
+      this.props.data.seconds = 0;
+      this.props.data.minutes += 1;
+    }
+    if(this.props.data.minutes >59){
+      this.props.data.minutes = 0;
+      this.props.data.hours += 1;
+    }
   },
   render: function(){
     return (
       <div className="timer">
         {this.props.data.hours} : {this.props.data.minutes} : {this.props.data.seconds}
         <input type="submit" value="Start" onClick={this.startCounter.bind(this, this.props.data)} />
-        <input type="submit" value="Stop" onClick={this.stopCounter}/>
-        <input type="submit" value="Reset" onClick={this.clearStopWatch}  />
+        <input type="submit" value="Stop" onClick={this.stopCounter. bind(this, this.props.data)}/>
+        <input type="submit" value="Reset" onClick={this.clearStopWatch.bind(this, this.props.data)}  />
         </div>
     )
   }
